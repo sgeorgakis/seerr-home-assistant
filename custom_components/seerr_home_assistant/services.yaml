@@ -1,0 +1,61 @@
+search:
+  name: Search
+  description: Search for media on the Seerr server. Returns paginated results including poster paths.
+  fields:
+    query:
+      name: Query
+      description: The search keyword.
+      required: true
+      example: "Breaking Bad"
+      selector:
+        text:
+    page:
+      name: Page
+      description: Page number for paginated results (default 1).
+      required: false
+      default: 1
+      selector:
+        number:
+          min: 1
+
+request_media:
+  name: Request Media
+  description: >
+    Create a media request. If the request is not automatically approved by the
+    server, it will be approved immediately.
+  fields:
+    media_id:
+      name: Media ID
+      description: The TMDB ID of the movie or TV show.
+      required: true
+      selector:
+        number:
+          min: 1
+    media_type:
+      name: Media Type
+      description: Whether the media is a movie or TV show.
+      required: true
+      selector:
+        select:
+          options:
+            - movie
+            - tv
+    is4k:
+      name: 4K
+      description: Request the 4K version.
+      required: false
+      default: false
+      selector:
+        boolean:
+
+approve_request:
+  name: Approve Request
+  description: Approve a pending media request by its ID.
+  fields:
+    request_id:
+      name: Request ID
+      description: The ID of the request to approve.
+      required: true
+      selector:
+        number:
+          min: 1

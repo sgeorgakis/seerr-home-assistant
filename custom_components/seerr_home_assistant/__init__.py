@@ -18,6 +18,7 @@ from .const import (
     LOGGER,
 )
 from .coordinator import SeerrCoordinator
+from .services import async_register_services, async_unregister_services
 
 # Register platform modules here as they are added (e.g. "sensor", "binary_sensor").
 PLATFORMS: list[str] = []
@@ -44,6 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    async_register_services(hass)
 
     LOGGER.debug("Seerr integration set up for %s", entry.title)
     return True
@@ -54,4 +56,5 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
+        async_unregister_services(hass)
     return unload_ok
