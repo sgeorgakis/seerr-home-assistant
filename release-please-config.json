@@ -1,0 +1,15 @@
+{
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "custom_components/seerr_home_assistant/manifest.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    }
+  }
+}

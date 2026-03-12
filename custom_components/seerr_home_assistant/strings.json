@@ -1,0 +1,32 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Seerr",
+        "description": "Enter your Overseerr or Jellyseerr server details.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "api_key": "API Key",
+          "ssl": "Use HTTPS",
+          "verify_ssl": "Verify SSL Certificate"
+        },
+        "data_description": {
+          "host": "Hostname or IP address of your Seerr server.",
+          "port": "Port your Seerr server listens on (default 5055).",
+          "api_key": "API key from Seerr → Settings → General.",
+          "ssl": "Enable if your server uses HTTPS.",
+          "verify_ssl": "Disable only for self-signed certificates."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the server. Check the host and port.",
+      "invalid_auth": "Invalid API key. Please verify your credentials.",
+      "unknown": "Unexpected error. See the Home Assistant logs for details."
+    },
+    "abort": {
+      "already_configured": "This Seerr server is already configured."
+    }
+  }
+}

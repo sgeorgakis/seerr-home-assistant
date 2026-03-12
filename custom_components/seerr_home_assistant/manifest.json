@@ -1,0 +1,14 @@
+{
+  "domain": "seerr_home_assistant",
+  "name": "Seerr",
+  "config_flow": true,
+  "documentation": "https://github.com/sgeorgakis/seerr-home-assistant",
+  "issue_tracker": "https://github.com/sgeorgakis/seerr-home-assistant/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [ "@sgeorgakis" ],
+  "iot_class": "local_polling",
+  "version": "0.1.0",
+  "integration_type": "service",
+  "homeassistant": "2025.1.0"
+}
