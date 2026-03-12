@@ -10,7 +10,7 @@
     "@sgeorgakis"
   ],
   "iot_class": "local_polling",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "integration_type": "service",
   "homeassistant": "2025.1.0"
 }
