@@ -5,7 +5,7 @@
 [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
-A Home Assistant custom integration that connects to a [Jellyseerr](https://github.com/Fallenbagel/jellyseerr) / [Overseerr](https://github.com/sct/overseerr) server, enabling media request management directly from Home Assistant.
+A Home Assistant custom integration that connects to a Seerr server, enabling media request management directly from Home Assistant.
 
 ## Features
 
@@ -18,7 +18,7 @@ A Home Assistant custom integration that connects to a [Jellyseerr](https://gith
 ## Requirements
 
 - Home Assistant 2025.1 or newer
-- A running [Jellyseerr](https://github.com/Fallenbagel/jellyseerr) or [Overseerr](https://github.com/sct/overseerr) server with an API key
+- A running Seerr server with an API key
 
 ## Installation
 
@@ -38,7 +38,7 @@ Or manually add via HACS:
 ### Manual Installation
 
 1. Download or clone this repository
-2. Copy the `custom_components/seerr-home-assistant` folder to your Home Assistant `config/custom_components/` directory
+2. Copy the `custom_components/seerr_home_assistant` folder to your Home Assistant `config/custom_components/` directory
 3. Restart Home Assistant
 
 ## Configuration
@@ -58,7 +58,7 @@ Or manually add via HACS:
 
 ## Obtaining an API Key
 
-1. Open your Jellyseerr or Overseerr web UI
+1. Open your Seerr web UI
 2. Go to **Settings** → **General**
 3. Copy the value from the **API Key** field
 

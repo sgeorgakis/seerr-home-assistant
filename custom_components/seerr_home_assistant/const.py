@@ -12,7 +12,7 @@ CONF_SSL = "ssl"
 CONF_VERIFY_SSL = "verify_ssl"
 
 # Defaults
-DEFAULT_PORT = 5055  # Overseerr / Jellyseerr default
+DEFAULT_PORT = 5055
 DEFAULT_SSL = False
 DEFAULT_VERIFY_SSL = True
 

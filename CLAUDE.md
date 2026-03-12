@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Home Assistant custom integration (`seerr-home-assistant`) that connects to a Jellyseerr / Overseerr server. The integration allows Home Assistant to search for media, fetch media requests, and create new requests against the Seerr server.
+This is a Home Assistant custom integration (`seerr-home-assistant`) that connects to a Seerr server. The integration allows Home Assistant to search for media, fetch media requests, and create new requests against the Seerr server.
 
 ## Architecture
 

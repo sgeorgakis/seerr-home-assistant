@@ -1,4 +1,4 @@
-"""Async API client for Jellyseerr / Overseerr."""
+"""Async API client for Seerr."""
 from __future__ import annotations
 
 import asyncio
@@ -22,6 +22,8 @@ RequestFilter = Literal[
 ]
 
 RequestSort = Literal["added", "modified"]
+
+RequestStatus = Literal["approve", "decline"]
 
 
 # ---------------------------------------------------------------------------
@@ -51,7 +53,7 @@ class SeerrApiError(SeerrError):
 
 
 class SeerrClient:
-    """Async client for the Jellyseerr / Overseerr REST API.
+    """Async client for the Seerr REST API.
 
     Accepts an externally managed ``aiohttp.ClientSession`` (e.g. the one
     provided by ``homeassistant.helpers.aiohttp_client.async_get_clientsession``).
@@ -202,8 +204,38 @@ class SeerrClient:
         )
 
     # ------------------------------------------------------------------
-    # Requests  —  GET /api/v1/request
+    # Requests
     # ------------------------------------------------------------------
+
+    async def get_pending_requests(
+        self,
+        *,
+        take: int = 20,
+        skip: int = 0,
+    ) -> dict[str, Any]:
+        """Return a paginated list of pending media requests.
+
+        ``filter``, ``sort``, and ``sortDirection`` are fixed by the API contract
+        and are not configurable.
+
+        Args:
+            take: Number of results per page.
+            skip: Number of results to skip (offset).
+
+        Returns:
+            Dict with ``results`` (list of ``MediaRequest``) and ``pageInfo``.
+        """
+        return await self._request(
+            "GET",
+            "/requests",
+            params={
+                "take": take,
+                "skip": skip,
+                "filter": "pending",
+                "sort": "added",
+                "sortDirection": "desc",
+            },
+        )
 
     async def get_requests(
         self,
@@ -255,41 +287,42 @@ class SeerrClient:
         media_id: int,
         media_type: MediaType,
         *,
+        tvdb_id: int | None = None,
         seasons: list[int] | None = None,
         is4k: bool = False,
         server_id: int | None = None,
         profile_id: int | None = None,
         root_folder: str | None = None,
         language_profile_id: int | None = None,
-        tags: list[int] | None = None,
+        user_id: int | None = None,
     ) -> dict[str, Any]:
         """Submit a new media request.
 
         Args:
             media_id:            TMDB ID of the movie or TV show (required).
             media_type:          ``"movie"`` or ``"tv"`` (required).
-            seasons:             List of season numbers to request; only used
-                                 when ``media_type="tv"``.  Pass ``[0]`` for
-                                 all seasons.
+            tvdb_id:             TVDB ID — used for TV shows.
+            seasons:             List of season numbers to request (TV only).
             is4k:                Request the 4K version (default ``False``).
-            server_id:           Target Radarr / Sonarr server instance ID.
+            server_id:           Target server instance ID.
             profile_id:          Quality profile ID on the target server.
             root_folder:         Destination root folder path on the server.
-            language_profile_id: Sonarr language profile ID (TV only).
-            tags:                List of tag IDs to apply on the target server.
+            language_profile_id: Language profile ID (TV only).
+            user_id:             Submit the request on behalf of this user ID.
 
         Returns:
             The created ``MediaRequest`` object.
         """
         body: dict[str, Any] = {
-            "mediaId": media_id,
             "mediaType": media_type,
+            "mediaId": media_id,
             "is4k": is4k,
         }
 
-        if media_type == "tv" and seasons is not None:
+        if tvdb_id is not None:
+            body["tvdbId"] = tvdb_id
+        if seasons is not None:
             body["seasons"] = seasons
-
         if server_id is not None:
             body["serverId"] = server_id
         if profile_id is not None:
@@ -298,22 +331,30 @@ class SeerrClient:
             body["rootFolder"] = root_folder
         if language_profile_id is not None:
             body["languageProfileId"] = language_profile_id
-        if tags is not None:
-            body["tags"] = tags
+        if user_id is not None:
+            body["userId"] = user_id
 
-        return await self._request("POST", "/request", json=body)
+        return await self._request("POST", "/request/", json=body)
 
     # ------------------------------------------------------------------
     # Request actions
     # ------------------------------------------------------------------
 
-    async def approve_request(self, request_id: int) -> dict[str, Any]:
-        """Approve a pending request."""
-        return await self._request("POST", f"/request/{request_id}/approve")
+    async def update_request_status(
+        self,
+        request_id: int,
+        status: RequestStatus,
+    ) -> dict[str, Any]:
+        """Approve or decline a pending request.
 
-    async def decline_request(self, request_id: int) -> dict[str, Any]:
-        """Decline a pending request."""
-        return await self._request("POST", f"/request/{request_id}/decline")
+        Args:
+            request_id: ID of the request to update.
+            status:     ``"approve"`` or ``"decline"``.
+
+        Returns:
+            The updated ``MediaRequest`` object.
+        """
+        return await self._request("POST", f"/request/{request_id}/{status}")
 
     async def delete_request(self, request_id: int) -> None:
         """Delete a request permanently."""

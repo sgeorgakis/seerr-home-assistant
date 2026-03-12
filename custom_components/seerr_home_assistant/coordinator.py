@@ -10,19 +10,19 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import SeerAuthError, SeerClient, SeerConnectionError, SeerApiError
+from .api import SeerrApiError, SeerrAuthError, SeerrClient, SeerrConnectionError
 from .const import DOMAIN, LOGGER, SCAN_INTERVAL_MINUTES
 
 
 @dataclass
-class SeerData:
+class SeerrData:
     """Snapshot of data fetched from the Seerr server."""
 
     status: dict[str, Any]
     request_counts: dict[str, Any]
 
 
-class SeerCoordinator(DataUpdateCoordinator[SeerData]):
+class SeerrCoordinator(DataUpdateCoordinator[SeerrData]):
     """Poll the Seerr server on a fixed interval and fan data out to entities."""
 
     config_entry: ConfigEntry
@@ -30,7 +30,7 @@ class SeerCoordinator(DataUpdateCoordinator[SeerData]):
     def __init__(
         self,
         hass: HomeAssistant,
-        client: SeerClient,
+        client: SeerrClient,
         entry: ConfigEntry,
     ) -> None:
         super().__init__(
@@ -42,16 +42,16 @@ class SeerCoordinator(DataUpdateCoordinator[SeerData]):
         self.client = client
         self.config_entry = entry
 
-    async def _async_update_data(self) -> SeerData:
+    async def _async_update_data(self) -> SeerrData:
         try:
             status = await self.client.get_status()
             request_counts = await self.client.get_request_count()
-        except SeerAuthError as exc:
+        except SeerrAuthError as exc:
             # Triggers a reauthentication flow in the UI.
             raise ConfigEntryAuthFailed(exc) from exc
-        except SeerConnectionError as exc:
+        except SeerrConnectionError as exc:
             raise UpdateFailed(f"Cannot reach Seerr server: {exc}") from exc
-        except SeerApiError as exc:
+        except SeerrApiError as exc:
             raise UpdateFailed(f"Seerr API error: {exc}") from exc
 
-        return SeerData(status=status, request_counts=request_counts)
+        return SeerrData(status=status, request_counts=request_counts)

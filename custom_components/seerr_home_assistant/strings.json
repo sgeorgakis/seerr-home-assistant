@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect to Seerr",
-        "description": "Enter your Overseerr or Jellyseerr server details.",
+        "description": "Enter your Seerr server details.",
         "data": {
           "host": "Host",
           "port": "Port",

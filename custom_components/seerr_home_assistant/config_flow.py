@@ -10,7 +10,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import SeerAuthError, SeerClient, SeerConnectionError
+from .api import SeerrAuthError, SeerrClient, SeerrConnectionError
 from .const import (
     CONF_API_KEY,
     CONF_HOST,
@@ -37,7 +37,7 @@ async def _validate_connection(
     session = async_get_clientsession(
         hass, verify_ssl=data.get(CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL)
     )
-    client = SeerClient(
+    client = SeerrClient(
         host=data[CONF_HOST],
         port=data[CONF_PORT],
         api_key=data[CONF_API_KEY],
@@ -48,7 +48,7 @@ async def _validate_connection(
     return await client.get_status()
 
 
-class SeerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class SeerrConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle the UI-driven setup flow for Seerr."""
 
     VERSION = 1
@@ -61,9 +61,9 @@ class SeerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 status = await _validate_connection(self.hass, user_input)
-            except SeerAuthError:
+            except SeerrAuthError:
                 errors["base"] = "invalid_auth"
-            except SeerConnectionError:
+            except SeerrConnectionError:
                 errors["base"] = "cannot_connect"
             except Exception:
                 _LOGGER.exception("Unexpected error while connecting to Seerr")
