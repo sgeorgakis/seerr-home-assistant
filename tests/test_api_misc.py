@@ -28,7 +28,7 @@ async def test_search_calls_correct_endpoint():
     client = make_client()
     with patch.object(client, "_request", new_callable=AsyncMock, return_value={}) as mock_req:
         await client.search("Fight Club")
-    assert mock_req.call_args.args == ("GET", "/search/keyword")
+    assert mock_req.call_args.args == ("GET", "/search")
 
 
 @pytest.mark.asyncio
@@ -36,7 +36,7 @@ async def test_search_sends_query_param():
     client = make_client()
     with patch.object(client, "_request", new_callable=AsyncMock, return_value={}) as mock_req:
         await client.search("Breaking Bad")
-    assert mock_req.call_args.kwargs["params"]["query"] == "Breaking Bad"
+    assert mock_req.call_args.kwargs["params"]["query"] == "Breaking+Bad"
 
 
 @pytest.mark.asyncio
@@ -117,35 +117,6 @@ async def test_get_request_count_calls_correct_endpoint():
         result = await client.get_request_count()
     assert mock_req.call_args.args == ("GET", "/request/count")
     assert result["pending"] == 3
-
-
-# ---------------------------------------------------------------------------
-# delete_request
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.asyncio
-async def test_delete_request_calls_correct_endpoint():
-    client = make_client()
-    with patch.object(client, "_request", new_callable=AsyncMock, return_value={}) as mock_req:
-        await client.delete_request(7)
-    assert mock_req.call_args.args == ("DELETE", "/request/7")
-
-
-@pytest.mark.asyncio
-async def test_delete_request_returns_none():
-    client = make_client()
-    with patch.object(client, "_request", new_callable=AsyncMock, return_value={}):
-        result = await client.delete_request(7)
-    assert result is None
-
-
-@pytest.mark.asyncio
-async def test_delete_request_connection_error_propagates():
-    client = make_client()
-    with patch.object(client, "_request", new_callable=AsyncMock, side_effect=SeerrConnectionError("timeout")):
-        with pytest.raises(SeerrConnectionError):
-            await client.delete_request(7)
 
 
 # ---------------------------------------------------------------------------

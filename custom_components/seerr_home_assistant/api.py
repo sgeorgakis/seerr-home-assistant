@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import urllib.parse
 from typing import Any, Literal
 
 import aiohttp
@@ -199,8 +200,8 @@ class SeerrClient:
         """
         return await self._request(
             "GET",
-            "/search/keyword",
-            params={"query": query, "page": page},
+            "/search",
+            params={"query": urllib.parse.quote_plus(query), "page": page},
         )
 
     # ------------------------------------------------------------------
@@ -227,7 +228,7 @@ class SeerrClient:
         """
         return await self._request(
             "GET",
-            "/requests",
+            "/request",
             params={
                 "take": take,
                 "skip": skip,
@@ -355,10 +356,6 @@ class SeerrClient:
             The updated ``MediaRequest`` object.
         """
         return await self._request("POST", f"/request/{request_id}/{status}")
-
-    async def delete_request(self, request_id: int) -> None:
-        """Delete a request permanently."""
-        await self._request("DELETE", f"/request/{request_id}")
 
     # ------------------------------------------------------------------
     # Session lifecycle

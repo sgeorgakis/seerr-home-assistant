@@ -36,7 +36,7 @@ async def test_calls_correct_endpoint():
     with patch.object(client, "_request", new_callable=AsyncMock, return_value=PENDING_REQUESTS_RESPONSE) as mock_req:
         await client.get_pending_requests()
     mock_req.assert_called_once()
-    assert mock_req.call_args.args[1] == "/requests"
+    assert mock_req.call_args.args[1] == "/request"
 
 
 @pytest.mark.asyncio
